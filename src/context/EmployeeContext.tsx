@@ -5,13 +5,22 @@ import React, {
   useEffect,
   ReactNode,
 } from "react";
-import { Employee } from "../models/Employee";
-import { getEmployees } from "../services/employeeServices";
+import { Employee, IEmployeeApiData } from "../models/Employee";
+import {
+  getEmployees,
+  getEmployeeById,
+  updateEmployee,
+} from "../services/employeeServices";
 
 interface EmployeeContextProps {
   employees: Employee[];
   loading: boolean;
   error: string | null;
+  fetchEmployeeById: (id: number) => Promise<Employee | undefined>;
+  fetchUpdateEmployee: (
+    id: number,
+    employee: IEmployeeApiData
+  ) => Promise<{ message: string }>;
 }
 
 const EmployeeContext = createContext<EmployeeContextProps | undefined>(
@@ -38,8 +47,40 @@ export const EmployeeProvider = ({ children }: { children: ReactNode }) => {
     fetchEmployees();
   }, []);
 
+  const fetchEmployeeById = async (
+    id: number
+  ): Promise<Employee | undefined> => {
+    try {
+      const employee = await getEmployeeById(id);
+      return employee;
+    } catch (err) {
+      setError("Failed to fetch employee details");
+      return undefined;
+    }
+  };
+
+  const fetchUpdateEmployee = async (
+    id: number,
+    employee: IEmployeeApiData
+  ) => {
+    try {
+      return await updateEmployee(id, employee);
+    } catch (error) {
+      setError("Failed to fetch update employee");
+      return { message: "Failed to fetch update employee" };
+    }
+  };
+
   return (
-    <EmployeeContext.Provider value={{ employees, loading, error }}>
+    <EmployeeContext.Provider
+      value={{
+        employees,
+        loading,
+        error,
+        fetchEmployeeById,
+        fetchUpdateEmployee,
+      }}
+    >
       {children}
     </EmployeeContext.Provider>
   );

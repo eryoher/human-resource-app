@@ -7,6 +7,7 @@ import {
   differenceInMonths,
   differenceInDays,
 } from "date-fns";
+import { getFormattedDate } from "../utils/date";
 
 type Props = {
   employee: Employee;
@@ -14,16 +15,7 @@ type Props = {
 };
 
 export const EmployeeItem = ({ employee, onRemove }: Props) => {
-  const hireDate = new Date(`${employee.hireDate}T00:00`);
-  const today = new Date();
-
-  const years = differenceInYears(today, hireDate);
-  const months = differenceInMonths(today, hireDate) % 12;
-  // const days = differenceInDays(today, hireDate) % 30;
-  const days = parseInt(format(today, "d")) - parseInt(format(hireDate, "d"));
-
-  const formattedHireDate = format(hireDate, "MMMM d, yyyy");
-  const tenure = `${years}y – ${months}m – ${days}d`;
+  const { formattedDate, tenure } = getFormattedDate(employee.hireDate);
 
   return (
     <div className="max-w-full w-full lg:max-w-full lg:flex my-5 border border-gray-300 bg-white rounded-lg shadow-md">
@@ -48,7 +40,7 @@ export const EmployeeItem = ({ employee, onRemove }: Props) => {
           </div>
           <div className="text-gray-700 text-base">
             <span className="font-semibold">Hire Date: </span>
-            {formattedHireDate} ({tenure})
+            {formattedDate} ({tenure})
           </div>
         </div>
         <div className="flex justify-end space-x-4">
