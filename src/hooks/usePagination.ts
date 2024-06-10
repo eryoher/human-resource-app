@@ -12,6 +12,10 @@ export const usePagination = (data: any[], itemsPerPage: number) => {
     return data.slice(begin, end);
   };
 
+  const goToPage = (page: number) => {
+    setCurrentPage(Math.min(Math.max(page, 1), maxPage));
+  };
+
   const next = () => {
     setCurrentPage((currentPage) => Math.min(currentPage + 1, maxPage));
   };
@@ -20,5 +24,5 @@ export const usePagination = (data: any[], itemsPerPage: number) => {
     setCurrentPage((currentPage) => Math.max(currentPage - 1, 1));
   };
 
-  return { currentData, next, prev, currentPage, maxPage };
+  return { currentData, next, prev, goToPage, currentPage, maxPage };
 };

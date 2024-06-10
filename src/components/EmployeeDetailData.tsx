@@ -5,10 +5,11 @@ import { useDepartment } from "../context/DepartmentContext";
 import classNames from "classnames";
 import EmployeeHistory from "./EmployeeHistoryTable";
 import { transformKeysToCamelCase } from "../utils/transformKeys";
+import { Link } from "react-router-dom";
 
 type Props = {
   employee: Employee;
-  handleUpdateEmployee: (departmentId: number) => void;
+  handleUpdateEmployee: (departmentId: number, state: boolean) => void;
 };
 
 const EmployeeDetailData = ({ employee, handleUpdateEmployee }: Props) => {
@@ -20,10 +21,13 @@ const EmployeeDetailData = ({ employee, handleUpdateEmployee }: Props) => {
     departmentName,
     departmentId,
     hireDate,
+    active,
     id,
   } = employee;
   const [selectedDepartment, setSelectedDepartment] =
     useState<number>(departmentId);
+
+  const [employeeStatus, setEmployeeStatus] = useState<boolean>(active);
 
   const { formattedDate, tenure } = getFormattedDate(hireDate);
   const { departments } = useDepartment();
@@ -33,15 +37,20 @@ const EmployeeDetailData = ({ employee, handleUpdateEmployee }: Props) => {
   };
 
   const handleUpdate = () => {
-    handleUpdateEmployee(selectedDepartment);
+    handleUpdateEmployee(selectedDepartment, active ? true : false);
+  };
+
+  const onChangeStatus = () => {
+    handleUpdateEmployee(departmentId, !employeeStatus);
+    setEmployeeStatus(!employeeStatus);
   };
 
   return (
     <Fragment>
-      <div className="max-w-full w-full lg:max-w-full lg:flex my-5 border border-gray-300 bg-white rounded-lg shadow-md">
+      <div className="max-w-full w-full lg:max-w-full lg:flex my-5 border border-gray-300 bg-white rounded-lg shadow-md relative ">
         {/* Avatar */}
         <div
-          className="flex-none w-1/3 flex justify-center items-center p-4"
+          className="flex-none w-1/3 flex justify-center items-center p-4 relative"
           title="user avatar"
         >
           <img
@@ -49,6 +58,13 @@ const EmployeeDetailData = ({ employee, handleUpdateEmployee }: Props) => {
             alt="user avatar"
             className="object-cover h-48 w-48 rounded-full border-4 border-gray-300 shadow-lg"
           />
+          {!active && (
+            <div className="w-full absolute bottom-0 left-0 text-center mb-14 ">
+              <h2 className="text-4xl font-bold text-gray-500 text-center">
+                Inactive
+              </h2>
+            </div>
+          )}
         </div>
         <div className="p-4 flex flex-col justify-between leading-normal flex-grow w-1/3">
           <div className="mb-8">
@@ -76,6 +92,7 @@ const EmployeeDetailData = ({ employee, handleUpdateEmployee }: Props) => {
               <span className="font-semibold">Department: </span>
               <select
                 value={selectedDepartment}
+                disabled={!active}
                 onChange={(e) => onChangeDepartment(parseInt(e.target.value))}
                 className="bg-white border border-gray-300 rounded px-3 py-1 focus:outline-none focus:border-blue-500"
               >
@@ -86,12 +103,12 @@ const EmployeeDetailData = ({ employee, handleUpdateEmployee }: Props) => {
                 ))}
               </select>
             </div>
-            <div className="text-gray-700 text-base mb-2">
+            <div className="text-gray-700 text-base mb-2 grid grid-cols-1 ">
               <button
                 onClick={handleUpdate}
                 disabled={departmentId === selectedDepartment}
                 className={classNames(
-                  "px-4 py-2 rounded-lg shadow text-white",
+                  "px-4 py-2 rounded-lg shadow text-white w-1/2 items-center",
                   {
                     "bg-blue-500": departmentId !== selectedDepartment,
                     "bg-gray-500": departmentId === selectedDepartment,
@@ -110,20 +127,27 @@ const EmployeeDetailData = ({ employee, handleUpdateEmployee }: Props) => {
             </div>
             <div className="text-gray-700 text-base">{formattedDate}</div>
             <div className="text-gray-700 text-base">{tenure}</div>
-            <div className="text-gray-700 text-base mb-2 pt-3">
+            <div className="text-gray-700 text-base mb-2 pt-3 grid grid-cols-2 ">
               <button
-                // onClick={onDeactivate}
-                className="px-4 py-2 rounded-lg shadow bg-red-500 text-white"
+                onClick={onChangeStatus}
+                className={classNames(
+                  "px-4 py-2 rounded-lg shadow text-white mr-5",
+                  { "bg-red-500": active, "bg-green-500": !active }
+                )}
               >
-                Deactivate
+                {active ? "Deactivate" : "Activate"}
               </button>
+              <Link
+                to={`/`}
+                className="bg-blue-500 text-white px-4 py-2 rounded-lg shadow text-center"
+              >
+                Back
+              </Link>
             </div>
           </div>
         </div>
       </div>
-      <div className="max-w-full w-full lg:max-w-full lg:flex my-5 border border-gray-300 bg-white rounded-lg shadow-md">
-        <EmployeeHistory history={transformKeysToCamelCase(employee.history)} />
-      </div>
+      <EmployeeHistory history={transformKeysToCamelCase(employee.history)} />
     </Fragment>
   );
 };

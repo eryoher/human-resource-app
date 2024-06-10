@@ -3,7 +3,7 @@ import { differenceInMonths, differenceInYears, format } from "date-fns";
 export const getFormattedDate = (
   date: string
 ): { formattedDate: string; tenure: string } => {
-  const hireDate = new Date(`${date}T00:00`);
+  const hireDate = new Date(date);
   const today = new Date();
 
   const years = differenceInYears(today, hireDate);

@@ -42,7 +42,10 @@ const EmployeeDetail: React.FC = () => {
     return <div>{error}</div>;
   }
 
-  const handleUpdateEmployee = async (departmentId: number) => {
+  const handleUpdateEmployee = async (
+    departmentId: number,
+    employeeStatus: boolean
+  ) => {
     if (employee) {
       const { id } = employee;
       const params: IEmployeeApiData = {
@@ -50,6 +53,7 @@ const EmployeeDetail: React.FC = () => {
         lastName: employee?.lastName,
         address: employee?.address,
         phone: employee?.phone,
+        active: employeeStatus,
         departmentId,
       };
 
