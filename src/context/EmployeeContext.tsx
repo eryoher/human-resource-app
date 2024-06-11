@@ -4,12 +4,15 @@ import React, {
   useState,
   useEffect,
   ReactNode,
+  useCallback,
 } from "react";
 import { Employee, IEmployeeApiData } from "../models/Employee";
 import {
   getEmployees,
   getEmployeeById,
   updateEmployee,
+  createEmployee,
+  deleteEmployee,
 } from "../services/employeeServices";
 
 interface EmployeeContextProps {
@@ -21,6 +24,10 @@ interface EmployeeContextProps {
     id: number,
     employee: IEmployeeApiData
   ) => Promise<{ message: string }>;
+  fetchCreateEmployee: (
+    employee: IEmployeeApiData
+  ) => Promise<{ message: string }>;
+  fetchDeleteEmployee: (employeeId: number) => Promise<{ message: string }>;
 }
 
 const EmployeeContext = createContext<EmployeeContextProps | undefined>(
@@ -32,19 +39,15 @@ export const EmployeeProvider = ({ children }: { children: ReactNode }) => {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    const fetchEmployees = async () => {
-      try {
-        const data = await getEmployees();
-        setEmployees(data);
-        setLoading(false);
-      } catch (err) {
-        setError("Failed to fetch employees");
-        setLoading(false);
-      }
-    };
-
-    fetchEmployees();
+  const fetchEmployees = useCallback(async () => {
+    try {
+      const data = await getEmployees();
+      setEmployees(data);
+      setLoading(false);
+    } catch (err) {
+      setError("Failed to fetch employees");
+      setLoading(false);
+    }
   }, []);
 
   const fetchEmployeeById = async (
@@ -64,12 +67,39 @@ export const EmployeeProvider = ({ children }: { children: ReactNode }) => {
     employee: IEmployeeApiData
   ) => {
     try {
+      fetchEmployees(); // update list of employees
       return await updateEmployee(id, employee);
     } catch (error) {
       setError("Failed to fetch update employee");
       return { message: "Failed to fetch update employee" };
     }
   };
+
+  const fetchCreateEmployee = async (employee: IEmployeeApiData) => {
+    try {
+      const response = await createEmployee(employee);
+      fetchEmployees(); // update list of employees
+      return response;
+    } catch (error) {
+      setError("Failed to fetch create employee");
+      return { message: "Failed to fetch create employee" };
+    }
+  };
+
+  const fetchDeleteEmployee = async (employeeId: number) => {
+    try {
+      const response = await deleteEmployee(employeeId);
+      fetchEmployees(); // update list of employees
+      return response;
+    } catch (error) {
+      setError("Failed to fetch remove employee");
+      return { message: "Failed to fetch remove employee" };
+    }
+  };
+
+  useEffect(() => {
+    fetchEmployees();
+  }, [fetchEmployees]);
 
   return (
     <EmployeeContext.Provider
@@ -79,6 +109,8 @@ export const EmployeeProvider = ({ children }: { children: ReactNode }) => {
         error,
         fetchEmployeeById,
         fetchUpdateEmployee,
+        fetchCreateEmployee,
+        fetchDeleteEmployee,
       }}
     >
       {children}

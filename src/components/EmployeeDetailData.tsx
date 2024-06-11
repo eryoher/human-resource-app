@@ -6,6 +6,7 @@ import classNames from "classnames";
 import EmployeeHistory from "./EmployeeHistoryTable";
 import { transformKeysToCamelCase } from "../utils/transformKeys";
 import { Link } from "react-router-dom";
+import { APIURL } from "../constants";
 
 type Props = {
   employee: Employee;
@@ -23,7 +24,11 @@ const EmployeeDetailData = ({ employee, handleUpdateEmployee }: Props) => {
     hireDate,
     active,
     id,
+    avatar,
   } = employee;
+
+  const urlImage = avatar ? `${APIURL}${avatar}` : "../not_image.jpg";
+
   const [selectedDepartment, setSelectedDepartment] =
     useState<number>(departmentId);
 
@@ -54,7 +59,7 @@ const EmployeeDetailData = ({ employee, handleUpdateEmployee }: Props) => {
           title="user avatar"
         >
           <img
-            src="../not_image.jpg" // Replace with actual employee image URL if available
+            src={urlImage} // Replace with actual employee image URL if available
             alt="user avatar"
             className="object-cover h-48 w-48 rounded-full border-4 border-gray-300 shadow-lg"
           />

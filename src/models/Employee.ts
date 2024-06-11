@@ -9,6 +9,7 @@ export interface Employee {
   hireDate: string;
   active: boolean;
   history: IHistory[];
+  avatar: File | string;
 }
 
 export interface IHistory {
@@ -27,4 +28,5 @@ export interface IEmployeeApiData {
   address: string;
   departmentId: number;
   active: boolean;
+  avatar?: File | string;
 }

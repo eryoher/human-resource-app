@@ -18,10 +18,33 @@ export const updateEmployee = async (
   employeeId: number,
   updatedEmployeeData: IEmployeeApiData
 ): Promise<{ message: string }> => {
-  const response = await axios.put(
-    `${API_URL}/${employeeId}`,
-    updatedEmployeeData
-  );
+  return await axios.put(`${API_URL}/${employeeId}`, updatedEmployeeData);
+};
 
-  return transformKeysToCamelCase(response.data);
+export const createEmployee = async (
+  employeeData: IEmployeeApiData
+): Promise<{ message: string }> => {
+  const { avatar, active, address, departmentId, firstName, lastName, phone } =
+    employeeData;
+
+  const formData = new FormData();
+  formData.append("avatar", avatar as Blob);
+  formData.append("firstName", firstName);
+  formData.append("lastName", lastName);
+  formData.append("address", address);
+  formData.append("phone", phone);
+  formData.append("departmentId", `${departmentId}`);
+  formData.append("active", `${active}`);
+
+  return await axios.post(`${API_URL}`, formData, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
+};
+
+export const deleteEmployee = async (
+  employeeId: number
+): Promise<{ message: string }> => {
+  return await axios.delete(`${API_URL}/${employeeId}`);
 };
