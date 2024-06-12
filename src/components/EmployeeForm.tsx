@@ -26,11 +26,13 @@ const EmployeeForm = ({ initialValues, onSubmit }: Props) => {
       lastName: Yup.string().required("Last name is required"),
       phone: Yup.string().required("Phone number is required"),
       address: Yup.string().required("Address is required"),
-      departmentId: Yup.number().required("Department is required"),
+      departmentId: Yup.number()
+        .min(1, "Department is required")
+        .required("Department is required"),
       avatar: Yup.mixed()
         .required("Avatar is required")
-        .test("fileSize", "File size is too large", (value: any) => {
-          return value && value.size <= 2000000; // 2MB
+        .test("fileSize", "File size is too large, Max 1MB", (value: any) => {
+          return value && value.size <= 1000000; // 1MB
         })
         .test("fileFormat", "Unsupported File Format", (value: any) => {
           return value && SUPPORTED_FORMATS.includes(value.type);
@@ -41,36 +43,36 @@ const EmployeeForm = ({ initialValues, onSubmit }: Props) => {
     },
   });
 
+  const { touched, errors, values } = formik;
+
   return (
     <form
       onSubmit={formik.handleSubmit}
-      className="max-w-full w-full lg:max-w-full lg:flex my-5 border border-gray-300 bg-white rounded-lg shadow-md"
+      className="max-w-full w-full lg:max-w-full my-5 border border-gray-300 bg-white rounded-lg shadow-md grid grid-cols-1 lg:grid-cols-1 gap-4 p-4"
     >
-      <div className="p-4 flex flex-col justify-between leading-normal flex-grow">
-        <div className="mb-8">
-          <div className="text-gray-900 font-bold text-2xl mb-4">
-            Employee Form
-          </div>
+      {/* Form Section */}
+      <div className="col-span-1">
+        <div className="text-gray-900 font-bold text-2xl mb-4">
+          Employee Form
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div className="text-gray-700 text-base mb-2">
             <label className="font-semibold">First Name:</label>
             <input
               type="text"
               name="firstName"
-              value={formik.values.firstName}
+              value={values.firstName}
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
               className={classNames(
-                "bg-white border border-gray-300 rounded px-3 py-1 focus:outline-none focus:border-blue-500",
+                "bg-white border border-gray-300 rounded px-3 py-1 focus:outline-none focus:border-blue-500 w-full",
                 {
-                  "border-red-500":
-                    formik.touched.firstName && formik.errors.firstName,
+                  "border-red-500": touched.firstName && errors.firstName,
                 }
               )}
             />
-            {formik.touched.firstName && formik.errors.firstName ? (
-              <div className="text-red-500 text-sm">
-                {formik.errors.firstName}
-              </div>
+            {touched.firstName && errors.firstName ? (
+              <div className="text-red-500 text-sm">{errors.firstName}</div>
             ) : null}
           </div>
           <div className="text-gray-700 text-base mb-2">
@@ -78,21 +80,18 @@ const EmployeeForm = ({ initialValues, onSubmit }: Props) => {
             <input
               type="text"
               name="lastName"
-              value={formik.values.lastName}
+              value={values.lastName}
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
               className={classNames(
-                "bg-white border border-gray-300 rounded px-3 py-1 focus:outline-none focus:border-blue-500",
+                "bg-white border border-gray-300 rounded px-3 py-1 focus:outline-none focus:border-blue-500 w-full",
                 {
-                  "border-red-500":
-                    formik.touched.lastName && formik.errors.lastName,
+                  "border-red-500": touched.lastName && errors.lastName,
                 }
               )}
             />
-            {formik.touched.lastName && formik.errors.lastName ? (
-              <div className="text-red-500 text-sm">
-                {formik.errors.lastName}
-              </div>
+            {touched.lastName && errors.lastName ? (
+              <div className="text-red-500 text-sm">{errors.lastName}</div>
             ) : null}
           </div>
           <div className="text-gray-700 text-base mb-2">
@@ -100,18 +99,18 @@ const EmployeeForm = ({ initialValues, onSubmit }: Props) => {
             <input
               type="text"
               name="phone"
-              value={formik.values.phone}
+              value={values.phone}
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
               className={classNames(
-                "bg-white border border-gray-300 rounded px-3 py-1 focus:outline-none focus:border-blue-500",
+                "bg-white border border-gray-300 rounded px-3 py-1 focus:outline-none focus:border-blue-500 w-full",
                 {
-                  "border-red-500": formik.touched.phone && formik.errors.phone,
+                  "border-red-500": touched.phone && errors.phone,
                 }
               )}
             />
-            {formik.touched.phone && formik.errors.phone ? (
-              <div className="text-red-500 text-sm">{formik.errors.phone}</div>
+            {touched.phone && errors.phone ? (
+              <div className="text-red-500 text-sm">{errors.phone}</div>
             ) : null}
           </div>
           <div className="text-gray-700 text-base mb-2">
@@ -119,35 +118,31 @@ const EmployeeForm = ({ initialValues, onSubmit }: Props) => {
             <input
               type="text"
               name="address"
-              value={formik.values.address}
+              value={values.address}
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
               className={classNames(
-                "bg-white border border-gray-300 rounded px-3 py-1 focus:outline-none focus:border-blue-500",
+                "bg-white border border-gray-300 rounded px-3 py-1 focus:outline-none focus:border-blue-500 w-full",
                 {
-                  "border-red-500":
-                    formik.touched.address && formik.errors.address,
+                  "border-red-500": touched.address && errors.address,
                 }
               )}
             />
-            {formik.touched.address && formik.errors.address ? (
-              <div className="text-red-500 text-sm">
-                {formik.errors.address}
-              </div>
+            {touched.address && errors.address ? (
+              <div className="text-red-500 text-sm">{errors.address}</div>
             ) : null}
           </div>
           <div className="text-gray-700 text-base mb-2">
             <label className="font-semibold">Department:</label>
             <select
               name="departmentId"
-              value={formik.values.departmentId}
+              value={values.departmentId}
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
               className={classNames(
-                "bg-white border border-gray-300 rounded px-3 py-1 focus:outline-none focus:border-blue-500",
+                "bg-white border border-gray-300 rounded px-3 py-1 focus:outline-none focus:border-blue-500 w-full",
                 {
-                  "border-red-500":
-                    formik.touched.departmentId && formik.errors.departmentId,
+                  "border-red-500": touched.departmentId && errors.departmentId,
                 }
               )}
             >
@@ -158,42 +153,53 @@ const EmployeeForm = ({ initialValues, onSubmit }: Props) => {
                 </option>
               ))}
             </select>
-            {formik.touched.departmentId && formik.errors.departmentId ? (
-              <div className="text-red-500 text-sm">
-                {formik.errors.departmentId}
-              </div>
+            {touched.departmentId && errors.departmentId ? (
+              <div className="text-red-500 text-sm">{errors.departmentId}</div>
             ) : null}
           </div>
-          <input
-            id="avatar"
-            name="avatar"
-            type="file"
-            onChange={(event) => {
-              const file = event.currentTarget.files
-                ? event.currentTarget.files[0]
-                : null;
-              formik.setFieldValue("avatar", file);
-            }}
-            className="form-input mt-1 block w-full"
-          />
-
-          <div className="text-gray-700 text-base mb-2 grid grid-cols-1">
-            <button
-              type="submit"
-              className="px-4 py-2 rounded-lg shadow text-white bg-blue-500 w-1/2 items-center"
-            >
-              Submit
-            </button>
+          <div className="text-gray-700 text-base mb-2">
+            <label className="font-semibold">Avatar:</label>
+            <input
+              id="avatar"
+              name="avatar"
+              type="file"
+              onChange={(event) => {
+                const file = event.currentTarget.files
+                  ? event.currentTarget.files[0]
+                  : null;
+                formik.setFieldValue("avatar", file);
+              }}
+              className={classNames(
+                "bg-white border border-gray-300 rounded px-3 py-1 focus:outline-none focus:border-blue-500 w-full",
+                {
+                  "border-red-500": errors.avatar,
+                  "text-red-500": errors.avatar,
+                }
+              )}
+            />
+            {errors.avatar ? (
+              <div className="text-red-500 text-sm">{errors.avatar}</div>
+            ) : null}
+          </div>
+          <div className="text-gray-700 text-base mb-2 grid grid-cols-2 ">
+            <div className="flex items-start justify-center mr-5">
+              <button
+                type="submit"
+                className="px-4 py-2 rounded-lg shadow text-white bg-blue-500 w-full"
+              >
+                Submit
+              </button>
+            </div>
+            <div className="flex items-start justify-center">
+              <Link
+                to="/"
+                className="bg-blue-500 text-white px-4 py-2 rounded-lg shadow text-center w-full"
+              >
+                Cancel
+              </Link>
+            </div>
           </div>
         </div>
-      </div>
-      <div className="p-4 flex flex-col justify-between leading-normal flex-grow w-1/3">
-        <Link
-          to="/"
-          className="bg-blue-500 text-white px-4 py-2 rounded-lg shadow text-center"
-        >
-          Back
-        </Link>
       </div>
     </form>
   );
