@@ -50,16 +50,22 @@ const EmployeeForm = ({ initialValues, onSubmit }: Props) => {
       onSubmit={formik.handleSubmit}
       className="max-w-full w-full lg:max-w-full my-5 border border-gray-300 bg-white rounded-lg shadow-md grid grid-cols-1 lg:grid-cols-1 gap-4 p-4"
     >
-      {/* Form Section */}
       <div className="col-span-1">
         <div className="text-gray-900 font-bold text-2xl mb-4">
           Employee Form
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div className="text-gray-700 text-base mb-2">
-            <label className="font-semibold">First Name:</label>
+            <label
+              htmlFor="firstName"
+              aria-labelledby="firstName"
+              className="font-semibold"
+            >
+              First Name:
+            </label>
             <input
               type="text"
+              id="firstName"
               name="firstName"
               value={values.firstName}
               onChange={formik.handleChange}
@@ -71,14 +77,17 @@ const EmployeeForm = ({ initialValues, onSubmit }: Props) => {
                 }
               )}
             />
-            {touched.firstName && errors.firstName ? (
+            {errors.firstName ? (
               <div className="text-red-500 text-sm">{errors.firstName}</div>
             ) : null}
           </div>
           <div className="text-gray-700 text-base mb-2">
-            <label className="font-semibold">Last Name:</label>
+            <label htmlFor="lastName" className="font-semibold">
+              Last Name:
+            </label>
             <input
               type="text"
+              id="lastName"
               name="lastName"
               value={values.lastName}
               onChange={formik.handleChange}
@@ -90,14 +99,17 @@ const EmployeeForm = ({ initialValues, onSubmit }: Props) => {
                 }
               )}
             />
-            {touched.lastName && errors.lastName ? (
+            {errors.lastName ? (
               <div className="text-red-500 text-sm">{errors.lastName}</div>
             ) : null}
           </div>
           <div className="text-gray-700 text-base mb-2">
-            <label className="font-semibold">Phone:</label>
+            <label htmlFor="phone" className="font-semibold">
+              Phone:
+            </label>
             <input
               type="text"
+              id="phone"
               name="phone"
               value={values.phone}
               onChange={formik.handleChange}
@@ -109,14 +121,17 @@ const EmployeeForm = ({ initialValues, onSubmit }: Props) => {
                 }
               )}
             />
-            {touched.phone && errors.phone ? (
+            {errors.phone ? (
               <div className="text-red-500 text-sm">{errors.phone}</div>
             ) : null}
           </div>
           <div className="text-gray-700 text-base mb-2">
-            <label className="font-semibold">Address:</label>
+            <label htmlFor="address" className="font-semibold">
+              Address:
+            </label>
             <input
               type="text"
+              id="address"
               name="address"
               value={values.address}
               onChange={formik.handleChange}
@@ -128,13 +143,16 @@ const EmployeeForm = ({ initialValues, onSubmit }: Props) => {
                 }
               )}
             />
-            {touched.address && errors.address ? (
+            {errors.address ? (
               <div className="text-red-500 text-sm">{errors.address}</div>
             ) : null}
           </div>
           <div className="text-gray-700 text-base mb-2">
-            <label className="font-semibold">Department:</label>
+            <label htmlFor="departmentId" className="font-semibold">
+              Department:
+            </label>
             <select
+              id="departmentId"
               name="departmentId"
               value={values.departmentId}
               onChange={formik.handleChange}
@@ -153,12 +171,14 @@ const EmployeeForm = ({ initialValues, onSubmit }: Props) => {
                 </option>
               ))}
             </select>
-            {touched.departmentId && errors.departmentId ? (
+            {errors.departmentId ? (
               <div className="text-red-500 text-sm">{errors.departmentId}</div>
             ) : null}
           </div>
           <div className="text-gray-700 text-base mb-2">
-            <label className="font-semibold">Avatar:</label>
+            <label className="font-semibold" htmlFor="avatar">
+              Avatar:
+            </label>
             <input
               id="avatar"
               name="avatar"
